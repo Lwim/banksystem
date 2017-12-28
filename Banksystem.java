@@ -90,6 +90,8 @@ public class Banksystem {
         //Kontrollera att personnummer inte redan finns i kundlistan
         if(bc.customerExist(pnr)){
             System.out.println("Kund med id: " + pnr + " existerar redan");
+            
+            // Om id redan finns skicka till meny ej till addCustomer
             showMeny();
         }
         
