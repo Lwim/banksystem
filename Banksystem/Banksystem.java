@@ -91,13 +91,14 @@ public class Banksystem {
         if(bc.customerExist(pnr)){
             System.out.println("Kund med id: " + pnr + " existerar redan");
             
-            // Om id redan finns skicka till meny ej till addCustomer
+        // Om id redan finns skicka till meny ej till addCustomer
             showMeny();
         }
-        
+        // anropa validering av personnummer
         LuhnValidation l = new LuhnValidation();
         boolean validPnr = l.luhn(pnr);
         
+        //Om personnummer är ogiltigt, skicka tillbaka till början av metod
         if (!validPnr){
             System.out.println("Ogiltigt personnummer");
             addCustomer();
@@ -131,13 +132,13 @@ public class Banksystem {
         accountNumber++;
         showMeny();
     }
-
+        // metod för att visa kund
     public static void showCustomer() {
         bc.printAllCustomer();
         showMeny();
 
     }
-    
+        // metod för att ta bort konto
     public static void delAccount() {
         boolean exist;
         Scanner input = new Scanner(System.in);
@@ -152,12 +153,12 @@ public class Banksystem {
         System.out.println("Konto borttaget");
         
     }
-
+        //metod för att skriva ut konton
     public static void printAccount() {
         bc.printAllAccount();
         showMeny();
     }
-
+        //metod för att skriva ut specifik kunds konto
     public static void printCustomerAccount() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange personnummer för kunden vars saldon du vill visa");
@@ -167,7 +168,7 @@ public class Banksystem {
 //        System.out.println(bc.printCustomerAccount(search).getOwner()+"  "+bc.printCustomerAccount(search).getBalance());
         showMeny();
     }
-
+        //metod för att söka kund
     public static void findCustomer() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange personnummer för kunden du vill söka");
@@ -175,7 +176,7 @@ public class Banksystem {
         System.out.println(bc.findCustomerbyPnr(search).getName());
         showMeny();
     }
-
+        // metod för att finna kund med hjälp av index
     static void findByIndex() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange index");
@@ -183,7 +184,7 @@ public class Banksystem {
         System.out.println(bc.findCustomerbyIndex(idx).getName());
         showMeny();
     }
-    
+        // metod för att göra överföring mellan konton
     static void makeTransfer() {
         boolean transfer;
         boolean exist;

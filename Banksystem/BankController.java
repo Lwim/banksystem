@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  *
- * @author MattPhelps
+ * @author petter
  */
 public class BankController {
     

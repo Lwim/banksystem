@@ -7,7 +7,7 @@ package Uppgift3.newpackage;
 
 /**
  *
- * @author MattPhelps
+ * @author petter
  */
 
 public class BankCustomer {
