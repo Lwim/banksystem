@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Uppgift3.newpackage; 
+package exam3;
+
 import java.util.Scanner;
 
 /**
@@ -16,14 +17,46 @@ public class Banksystem {
     static int accountNumber = 1000; //löpnummer för konton
 
     public static void main(String[] args) {
-        loadTestData();
+        loadTestData(); //laddar testdata
         //Anropar meny
         showMeny();
     }
+// huvudmeny
 
     public static void showMeny() {
         Scanner input = new Scanner(System.in);
-        System.out.println("\n 1. Meny \n 2. Skapa kund \n 3. Visa kunder \n 4. Sök kund \n 5. Lägg till konto \n 6. Visa alla konton \n 7. Visa kunds konton \n 8. Gör överföring \n 9. Ta bort konto \n 10. Avsluta");
+        System.out.println("\n 1. Meny \n 2. Hantera kunder \n 3. Hantera konton \n 4. Avsluta");
+        while (true) {
+            int menyVal = input.nextInt();
+            switch (menyVal) {
+                case 1: {
+                    showMeny();
+                    break;
+                }
+                case 2: {
+                    showCustomerMeny();
+                    break;
+                }
+                case 3: {
+                    showAccountMeny();
+                    break;
+                }
+                case 4: {
+                    System.exit(0);
+                    break;
+                }
+                default: {
+                    System.out.println("Ogiltigt menyval");
+                    break;
+                }
+            }
+        }
+    }
+//Meny för att hantera kunder
+
+    public static void showCustomerMeny() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("\n 1. Huvudmeny \n 2. Skapa kund \n 3. Visa kunder \n 4. Sök kund \n 5. Ta bort kund och konton");
         while (true) {
             int menyVal = input.nextInt();
             switch (menyVal) {
@@ -44,27 +77,51 @@ public class Banksystem {
                     break;
                 }
                 case 5: {
+                    delCustomer();
+                    break;
+                }
+
+                default: {
+                    System.out.println("Ogiltigt menyval");
+                    break;
+                }
+            }
+        }
+    }
+
+    // Meny för att hantera konton
+    public static void showAccountMeny() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("\n 1. Huvudmeny \n 2. Lägg till konto \n 3. Visa alla konton \n 4. Visa kunds konton \n 5. Gör överföring \n 6. Gör insättning \n 7. Ta bort konto");
+        while (true) {
+            int menyVal = input.nextInt();
+            switch (menyVal) {
+                case 1: {
+                    showMeny();
+                    break;
+                }
+                case 2: {
                     addAccount();
                     break;
                 }
-                case 6: {
+                case 3: {
                     printAccount();
                     break;
                 }
-                case 7: {
+                case 4: {
                     printCustomerAccount();
                     break;
                 }
-                case 8: {
+                case 5: {
                     makeTransfer();
                     break;
                 }
-                case 9: {
-                    delAccount();
+                case 6: {
+                    makeDeposit();
                     break;
-                }
-                case 10: {
-                    System.exit(0);
+                }                
+                case 7: {
+                    delAccount();
                     break;
                 }
                 default: {
@@ -75,35 +132,34 @@ public class Banksystem {
         }
     }
 
-        //metod för att lägga till kund
+    //metod för att lägga till kund
     public static void addCustomer() {
-        
+ 
         Scanner input = new Scanner(System.in);
         System.out.println("Ange personnummer 10 siffror");
         String pnr = input.nextLine();
-       
-        //Kontrollera längd av personnummer
+        
+        boolean exist = bc.customerExist(pnr);
+        
+        if (exist) {
+            System.out.println("Kunden finns redan.");
+            showCustomerMeny();
+        }        
+        
+        //Kontrollerar personnummers längd
         if (pnr.length() != 10) {
             System.out.println("Ogiltigt format på personnumret");
             addCustomer();
         }
-        //Kontrollera att personnummer inte redan finns i kundlistan
-        if(bc.customerExist(pnr)){
-            System.out.println("Kund med id: " + pnr + " existerar redan");
-            
-        // Om id redan finns skicka till meny ej till addCustomer
-            showMeny();
-        }
-        // anropa validering av personnummer
+        //Kontrollerar att personnumret har giltig kontrollsiffra
         LuhnValidation l = new LuhnValidation();
         boolean validPnr = l.luhn(pnr);
-        
-        //Om personnummer är ogiltigt, skicka tillbaka till början av metod
-        if (!validPnr){
+
+        if (!validPnr) {
             System.out.println("Ogiltigt personnummer");
             addCustomer();
         }
-        
+
         System.out.println("Ange kundens namn");
         String name = input.nextLine();
 
@@ -112,33 +168,47 @@ public class Banksystem {
         showMeny();
 
     }
+    //Ta bort kund samt alla konton för kunden
+    public static void delCustomer(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Ange kundens personnummer 10 siffror");
+        String owner = input.nextLine();
+        boolean exist = bc.customerExist(owner);
+        if (!exist) {
+            System.out.println("Kunden finns inte.");
+            delCustomer();
+        }
+        bc.delCustomerAccounts(owner);
+        bc.delCustomer(owner);
+        showCustomerMeny();
+    }
 
-        //metod för att lägga till konto
+    //metod för att lägga till konto
     public static void addAccount() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange kundens personnummer 10 siffror");
         String owner = input.nextLine();
         boolean exist = bc.customerExist(owner);
-        if (!exist){
+        if (!exist) {
             System.out.println("Kunden finns inte.");
             addAccount();
         }
-        
+
         int account = accountNumber;
         int balance = 0;
 
         bc.regAccount(owner, account, balance);
-        System.out.println("Konto skapat med kontonr: "+ accountNumber);
+        System.out.println("Konto skapat med kontonr: " + accountNumber);
         accountNumber++;
         showMeny();
     }
-        // metod för att visa kund
+// Skriv ut alla kunder
     public static void showCustomer() {
         bc.printAllCustomer();
         showMeny();
 
     }
-        // metod för att ta bort konto
+//Ta bort konto
     public static void delAccount() {
         boolean exist;
         Scanner input = new Scanner(System.in);
@@ -151,24 +221,23 @@ public class Banksystem {
         }
         bc.delAccount(account);
         System.out.println("Konto borttaget");
-        
+        showAccountMeny();
+
     }
-        //metod för att skriva ut konton
+//Skriv ut alla konton
     public static void printAccount() {
         bc.printAllAccount();
         showMeny();
     }
-        //metod för att skriva ut specifik kunds konto
+//Skriv ut konton för specifik kund
     public static void printCustomerAccount() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange personnummer för kunden vars saldon du vill visa");
         String search = input.nextLine();
         bc.printCustomerAccount(search);
-//        System.out.println("Konton        Saldo");
-//        System.out.println(bc.printCustomerAccount(search).getOwner()+"  "+bc.printCustomerAccount(search).getBalance());
         showMeny();
     }
-        //metod för att söka kund
+//onödig?
     public static void findCustomer() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange personnummer för kunden du vill söka");
@@ -176,7 +245,7 @@ public class Banksystem {
         System.out.println(bc.findCustomerbyPnr(search).getName());
         showMeny();
     }
-        // metod för att finna kund med hjälp av index
+//onödig?
     static void findByIndex() {
         Scanner input = new Scanner(System.in);
         System.out.println("Ange index");
@@ -184,47 +253,26 @@ public class Banksystem {
         System.out.println(bc.findCustomerbyIndex(idx).getName());
         showMeny();
     }
-        // metod för att göra överföring mellan konton
-    static void makeTransfer() {
-        boolean transfer;
+//Sätt in pengar på konto
+    static void makeDeposit() {
         boolean exist;
         Scanner input = new Scanner(System.in);
-        System.out.println("Från vilket konto ska överföringen ske?");
-        int from = input.nextInt();
-        exist = bc.accountExist(from);
+        System.out.println("Ange kontonummer för insättning");
+        int account = input.nextInt();
+        exist = bc.accountExist(account);
         if (!exist) {
             System.out.println("Kontot finns ej");
-            makeTransfer();
+            makeDeposit();
         }
-        
-        System.out.println("Till vilket konto ska pengarna överföras till?");
-        int to = input.nextInt();
-        
-        exist = bc.accountExist(to);
-        if (!exist) {
-            System.out.println("Kontot finns ej");
-            makeTransfer();
-        }
-        
-        System.out.println("Ange summa för överföring");
+        System.out.println("Ange belopp du vill sätta in på konto "+account);
         int amount = input.nextInt();
-        
-        transfer = bc.balanceOk(from, amount); //kollar att kontot har täckning.
-        
-        if (transfer) {
-            bc.balanceTransfer(from, to, amount);
-            System.out.println("Överföring klar");
-            showMeny();
-        }
-        else {
-            System.out.println("Beloppet är större än saldot på kontot.");
-            showMeny();
-        }
-    }
+        bc.makeDeposit(account, amount);
+        showAccountMeny();
+   
 
     //Endast testdata
     static void loadTestData() {
-        bc.regCustomer("8912277897", "Kalle Kula");
+        bc.regCustomer("8510102499", "Kalle Kula");
         bc.regCustomer("8311013671", "Bengt Sträng");
         bc.regCustomer("7905209563", "Johan Andersson");
         bc.regCustomer("9209158637", "Anna Persson");
@@ -238,7 +286,7 @@ public class Banksystem {
         accountNumber++;
         bc.regAccount("8311013671", accountNumber, 2800);
         accountNumber++;
-        bc.regAccount("8912277897", accountNumber, 18000);
+        bc.regAccount("8510102499", accountNumber, 18000);
         accountNumber++;
     }
 

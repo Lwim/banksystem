@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Uppgift3.newpackage;
+package exam3;
 
 /**
  *
- * @author MattPhelps
+ * @author petter
  */
 public class BankAccount {
- 
     private String owner;
     private int account;
     private int balance;

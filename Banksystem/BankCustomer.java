@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Uppgift3.newpackage;
+package exam3;
 
 /**
  *
  * @author petter
  */
-
 public class BankCustomer {
     
     private String pnr;
@@ -42,4 +41,3 @@ public class BankCustomer {
     
     
 }
-

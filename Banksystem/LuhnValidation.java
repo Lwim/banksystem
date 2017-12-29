@@ -3,21 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Uppgift3.newpackage;
+package exam3;
 
 /**
  *
  * @author petter
  */
-
 public class LuhnValidation {
     
     
    public boolean luhn(String pnr){
-    // this only works if you are certain all input will be at least 10 characters
     int extraChars = pnr.length() - 10;
     if (extraChars < 0) {
-      throw new IllegalArgumentException("Number length must be at least 10 characters!");
+      throw new IllegalArgumentException("Personnumret måste innehålla minst 10 tecken!");
     }
     pnr = pnr.substring(extraChars, 10 + extraChars);
     int sum = 0;
